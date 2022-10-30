@@ -16,4 +16,8 @@
 
 ** :balance_scale: 라이선스 (License)
 
-   MIT 라이선스를 따르고 있습니다. LICENSE.md 파일을 참고하세요.
+   MIT 라이선스를 따르고 있습니다. =LICENSE= 파일을 참고하세요.
+
+** :construction: 이 템플릿을 복사한 후 해야할 일
+
+   - =.tool-versions= 파일에 기록된 elixir 버전 확인

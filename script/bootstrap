@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# script/bootstrap: Resolve all dependencies that the application requires to
+#                   run.
+# https://github.com/github/scripts-to-rule-them-all
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if ! command -v asdf > /dev/null; then
+    echo "FAILED: 'asdf' is not installed"
+    exit 1
+fi
+
+# install all the tools defined in a '.tool-versions'
+asdf install
+
+mix local.hex --force
+mix local.rebar --force
+mix deps.get
