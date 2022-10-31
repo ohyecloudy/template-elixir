@@ -8,13 +8,19 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-if ! command -v asdf > /dev/null; then
-    echo "FAILED: 'asdf' is not installed"
-    exit 1
-fi
+if [[ "${USE_GLOBAL_ELIXIR}" = true ]]; then
+    echo "SKIP: use global elixir instead of asdf elixir"
+else
+    if ! command -v asdf > /dev/null; then
+        echo "FAILED: 'asdf' is not installed"
+        exit 1
+    fi
 
-# install all the tools defined in a '.tool-versions'
-asdf install
+    asdf plugin add erlang || true
+    asdf plugin add elixir || true
+    # install all the tools defined in a '.tool-versions'
+    asdf install
+fi
 
 mix local.hex --force
 mix local.rebar --force

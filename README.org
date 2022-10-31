@@ -20,4 +20,5 @@
 
 ** :construction: 이 템플릿을 복사한 후 해야할 일
 
-   - =.tool-versions= 파일에 기록된 elixir 버전 확인
+   - =.tool-versions= 파일 확인
+     + =erlang=, =elixir= 버전
