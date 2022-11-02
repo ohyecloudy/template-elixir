@@ -20,5 +20,20 @@
 
 ** :construction: 이 템플릿을 복사한 후 해야할 일
 
-   - =.tool-versions= 파일 확인
-     + =erlang=, =elixir= 버전
+*** =.tool-versions= 파일 확인
+
+    + =erlang=, =elixir= 버전
+
+*** =.dialyzer_ignore.exs= 파일
+
+    #+begin_src elixir
+      defmodule MyAwesomeProject do
+        use Mix.Project
+
+        def project do
+          [
+            # ...
+            dialyzer: [ignore_warnings: ".dialyzer_ignore.exs"]
+          ]
+        end
+    #+end_src
