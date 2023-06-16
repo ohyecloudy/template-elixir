@@ -8,7 +8,7 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-if [[ "${USE_GLOBAL_ELIXIR}" = true ]]; then
+if [ "${USE_GLOBAL_ELIXIR}" = true ]; then
     echo "SKIP: use global elixir instead of asdf elixir"
 else
     if ! command -v asdf > /dev/null; then
