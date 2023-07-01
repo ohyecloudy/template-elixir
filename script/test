@@ -10,6 +10,10 @@ cd "$(dirname "$0")/.."
 
 script/update
 
+echo "==> Check unused deps in mix.lock..."
+
+mix deps.unlock --check-unused
+
 echo "==> Running dialyzer..."
 
 mix dialyzer
