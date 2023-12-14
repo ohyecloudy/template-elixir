@@ -10,6 +10,14 @@ cd "$(dirname "$0")/.."
 
 script/update
 
+echo "==> Disallow compile warnings..."
+
+mix compile --warnings-as-errors
+
+echo "==> Check formatted..."
+
+mix format --check-formatted
+
 echo "==> Check unused deps in mix.lock..."
 
 mix deps.unlock --check-unused
