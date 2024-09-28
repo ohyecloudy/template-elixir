@@ -22,6 +22,10 @@ echo "==> Check unused deps in mix.lock..."
 
 mix deps.unlock --check-unused
 
+echo "==> Running credo..."
+
+mix credo suggest --min-priority high
+
 echo "==> Running dialyzer..."
 
 mix dialyzer
