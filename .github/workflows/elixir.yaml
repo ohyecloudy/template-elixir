@@ -38,24 +38,18 @@ jobs:
           --health-retries 5
 
     runs-on: ubuntu-latest
-    name: Test on OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
-    strategy:
-      # Specify the OTP and Elixir versions to use when building
-      # and running the workflow steps.
-      matrix:
-        otp: ['25.3.2.12']       # Define the OTP version [required]
-        elixir: ['1.16.3']    # Define the elixir version [required]
+    name: Test
     steps:
+    # Step: Check out the code.
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     # Step: Setup Elixir + Erlang image as the base.
     - name: Set up Elixir
       uses: erlef/setup-beam@v1
       with:
-        otp-version: ${{matrix.otp}}
-        elixir-version: ${{matrix.elixir}}
-
-    # Step: Check out the code.
-    - name: Checkout code
-      uses: actions/checkout@v3
+        version-file: .tool-versions
+        version-type: strict
 
     # Step: Define how to cache deps. Restores existing cache if present.
     - name: Cache deps
