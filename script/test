@@ -33,4 +33,7 @@ mix dialyzer
 echo "==> Running tests..."
 
 # MIX_ENV=test mix propcheck.clean
-mix test
+# Umbrella apps have multiple test suites, so failed tests are unobtrusive.
+# To make obvious that tests failed, we run failed tests separately.
+mix test || true
+mix test --failed
