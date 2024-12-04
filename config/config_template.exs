@@ -2,9 +2,13 @@ import Config
 
 import_config "#{Mix.env()}.exs"
 
-if File.exists?("./config/#{Mix.env()}.secret.exs") do
-  import_config "#{Mix.env()}.secret.exs"
-  IO.puts("Import #{Mix.env()}.secret.exs")
+# import secret config
+umbrella_root = Path.dirname(Path.expand(__DIR__))
+secret_config_path = Path.join([umbrella_root, "config", "#{Mix.env()}.secret.exs"])
+
+if File.exists?(secret_config_path) do
+  import_config secret_config_path
+  IO.puts("Import #{secret_config_path}")
 else
-  IO.puts("Cannot find #{Mix.env()}.secret.exs")
+  IO.puts("Cannot find #{secret_config_path}")
 end
