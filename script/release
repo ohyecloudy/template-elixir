@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+script/bootstrap
+
+MIX_ENV=prod mix release --overwrite
