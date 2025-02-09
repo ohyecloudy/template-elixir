@@ -9,9 +9,9 @@ name: Elixir CI
 # different name for the main branch like "master" or "production".
 on:
   push:
-    branches: [ "main" ]  # adapt branch for project
+    branches: [ "*" ]  # adapt branch for project
   pull_request:
-    branches: [ "main" ]  # adapt branch for project
+    branches: [ "*" ]  # adapt branch for project
 
 # Sets the ENV `MIX_ENV` to `test` for running tests
 env:
@@ -57,7 +57,7 @@ jobs:
       id: cache-deps
       uses: actions/cache@v4
       env:
-        cache-name: cache-elixir-deps
+        cache-name: cache-elixir-deps-${{ job }}
       with:
         path: deps
         key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
@@ -71,7 +71,7 @@ jobs:
       id: cache-build
       uses: actions/cache@v4
       env:
-        cache-name: cache-compiled-build
+        cache-name: cache-compiled-build-${{ job }}
       with:
         path: _build
         key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
@@ -105,6 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     needs: test # test 작업이 성공한 경우에만 실행
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
