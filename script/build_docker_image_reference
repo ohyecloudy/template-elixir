@@ -10,22 +10,12 @@ if [ ! -f .tool-versions ]; then
 fi
 
 ELIXIR_VERSION=$(awk '/^elixir / {print $2}' .tool-versions)
-ERLANG_VERSION_FULL=$(awk '/^erlang / {print $2}' .tool-versions)
-
-# Erlang 버전에서 정수 부분만 추출 (예: 26.0.3 → 26)
-ERLANG_VERSION=$(echo "$ERLANG_VERSION_FULL" | cut -d'.' -f1)
 
 if [ -z "$ELIXIR_VERSION" ]; then
     echo "? Error: Elixir version not found in .tool-versions!" >&2
     exit 1
 fi
 
-if [ -z "$ERLANG_VERSION" ]; then
-    echo "? Error: Erlang version not found in .tool-versions!" >&2
-    exit 1
-fi
+DOCKER_IMAGE="elixir:${ELIXIR_VERSION}-alpine"
 
-DOCKER_IMAGE="elixir:${ELIXIR_VERSION}-erlang-${ERLANG_VERSION}-alpine"
-
-# 결과 출력
 echo "$DOCKER_IMAGE"
