@@ -17,6 +17,11 @@ on:
 env:
   MIX_ENV: test
   USE_GLOBAL_ELIXIR: true
+  DATABASE_NAME: mydb
+  DATABASE_USERNAME: postgres
+  DATABASE_HOSTNAME: localhost
+  DATABASE_PASSWORD: postgres
+  DATABASE_PORT: 5432
 
 permissions:
   contents: read
