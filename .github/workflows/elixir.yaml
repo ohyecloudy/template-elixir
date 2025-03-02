@@ -12,6 +12,7 @@ on:
     branches: ["*"] # adapt branch for project
   pull_request:
     branches: ["*"] # adapt branch for project
+  workflow_dispatch:
 
 # Sets the ENV `MIX_ENV` to `test` for running tests
 env:
