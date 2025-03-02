@@ -157,12 +157,97 @@ jobs:
       - name: Clean to rule out incremental build as a source of flakiness
         if: github.run_attempt != '1'
         run: |
+          local.rebar --force
+          mix local.hex --force
           mix deps.clean --all
           mix clean
         shell: sh
 
       - name: Release
         run: script/release
+
+      - name: Deploy via scp
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          username: ${{ secrets.USER }}
+          host: ${{ secrets.HOST }}
+          key: ${{ secrets.KEY }}
+          source: _build/prod/rel/APPNAME/*
+          target: ${{ secrets.APP_DIR }}
+          strip_components: 4
+
+  deploy-arm64:
+    runs-on: ubuntu-latest
+    name: Deploy ARM64
+    needs: test # test 작업이 성공한 경우에만 실행
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step: Define how to cache deps. Restores existing cache if present.
+      - name: Cache deps
+        id: cache-deps
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-elixir-deps-${{ job }}
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ env.cache-name }}-
+
+      # Step: Define how to cache the `_build` directory. After the first run,
+      # this speeds up tests runs a lot. This includes not re-compiling our
+      # project's downloaded deps every run.
+      - name: Cache compiled build
+        id: cache-build
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-compiled-build-${{ job }}
+        with:
+          path: _build
+          key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ env.cache-name }}-
+            ${{ runner.os }}-mix-
+
+      - name: Set up QEMU for ARM64 emulation
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      - name: Get Elixir Docker Image
+        id: build_docker_image_reference
+        run: |
+          IMAGE_TAG=$(script/build_docker_image_reference)
+          echo "Docker image: $IMAGE_TAG"
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+      # Step: Conditionally bust the cache when job is re-run.
+      # Sometimes, we may have issues with incremental builds that are fixed by
+      # doing a full recompile. In order to not waste dev time on such trivial
+      # issues (while also reaping the time savings of incremental builds for
+      # *most* day-to-day development), force a full recompile only on builds
+      # that are retried.
+      - name: Clean to rule out incremental build as a source of flakiness
+        if: github.run_attempt != '1'
+        run: |
+          docker run --rm --platform linux/arm64 \
+            -v $PWD:/app -w /app \
+            $IMAGE_TAG \
+            sh -c "local.rebar --force;mix local.hex --force;mix deps.clean --all;mix clean"
+
+      # There have been issues in the past with qemu and the Erlang JIT
+      # ERL_FLAGS="+JMsingle true"
+      # https://elixirforum.com/t/multi-platform-docker-image-build-fails/66916/4
+      - name: Release for ARM64
+        run: |
+          docker run --rm --platform linux/arm64 \
+            -e USE_GLOBAL_ELIXIR=${USE_GLOBAL_ELIXIR}\
+            -v $PWD:/app -w /app \
+            $IMAGE_TAG \
+            sh -c "ERL_FLAGS=\"+JMsingle true\" script/release"
 
       - name: Deploy via scp
         uses: appleboy/scp-action@v0.1.7
