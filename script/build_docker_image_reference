@@ -16,6 +16,6 @@ if [ -z "$ELIXIR_VERSION" ]; then
     exit 1
 fi
 
-DOCKER_IMAGE="elixir:${ELIXIR_VERSION}-alpine"
+DOCKER_IMAGE="elixir:${ELIXIR_VERSION}"
 
 echo "$DOCKER_IMAGE"
