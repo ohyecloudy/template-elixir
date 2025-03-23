@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# script/log: Show the logs in follow mode. Optionally allow an
+#             environment to be passed in to let the script handle the
+#             specific requirements for showing the logs for that
+#             environment.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ -n "$1" ]; then
+  # use first argument as an environment name. Use this to decide how to show
+  # the appropriate log.
+  if [ "$1" = "production" ] || [ "$1" = "prod" ]; then
+    # ssh app-prod "journalctl -u APP -f"
+    echo "NOT IMPLEMENTED"
+    exit 1
+  elif [ "$1" = "staging" ] || [ "$1" = "stag" ]; then
+    # ssh app-stag "journalctl -u APP -f"
+    echo "NOT IMPLEMENTED"
+    exit 1
+  else
+    echo "Sorry, I don't know how to connect to the '$1' environment."
+    exit 1
+  fi
+else
+  tail -f logs/APP.log
+fi
