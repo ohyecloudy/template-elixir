@@ -216,7 +216,7 @@ jobs:
         with:
           platforms: arm64
 
-      - name: Get Elixir Docker Image
+      - name: Build elixir docker image reference
         id: build_docker_image_reference
         run: |
           IMAGE_TAG=$(script/build_docker_image_reference)
@@ -288,7 +288,7 @@ jobs:
         with:
           platforms: arm64
 
-      - name: Get Elixir Docker Image
+      - name: Build elixir docker image reference
         id: build_docker_image_reference
         run: |
           IMAGE_TAG=$(script/build_docker_image_reference)
